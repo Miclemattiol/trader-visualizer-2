@@ -1,0 +1,23 @@
+nav.SideBar {
+    outline: 1px solid var(--background-alt);
+    width: 300px;
+    height: 100%;
+    padding: 10px;
+    transition: width 0.5s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    &.Active {
+        width: 70px;
+        padding: 10px;
+    }
+
+    > div.Content {
+        flex-grow: 1;
+        display: flex;
+        height: max-content;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+}

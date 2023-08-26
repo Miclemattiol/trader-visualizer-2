@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+:root[theme='dark'] {
+	--text: #f6f6f6;
+	--background: #2f2f2f;
+	--text-alt: #2f2f2f;
+	--background-alt: #f6f6f6;
+	--sub-background: #3f3f3f;
+	--sub-background-alt: #b5b5b5;
+	--button: #f6f6f6;
+	--button-alt: #2f2f2f;
+	--button-hover: #2f2f2f;
+}
+
+:root[theme='light'] {
+	--text: #0f0f0f;
+	--background: #f6f6f6;
+	--text-alt: #f6f6f6;
+	--background-alt: #2f2f2f;
+	--sub-background: #b5b5b5;
+	--sub-background-alt: #3f3f3f;
+	--button: #2f2f2f;
+	--button-alt: #f6f6f6;
+	--button-hover: #f6f6f6;
+}
+
+:root {
+	
+
+	color: var(--text);
+	background-color: var(--background);
+
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-text-size-adjust: 100%;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Roboto', sans-serif;
+}
+
+html, body, #root {
+	width: 100%;
+	height: 100%;
+}
+
+html {
+	overflow: hidden;
+}

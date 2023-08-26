@@ -4,7 +4,7 @@ use std::vec;
 
 use tauri::{command, Window, Manager, AppHandle, EventHandler};
 
-use crate::SLEEP_TIME;
+use crate::commands::settings::SLEEP_TIME;
 use crate::consts::{ERROR_EVENT, ERROR_RUNNING, SET_STOP_EVENT, SET_PAUSE_EVENT, PAUSED_VALUE_CHANGED_EVENT, RUNNING_VALUE_CHANGED_EVENT, MARKET_UPDATE_EVENT};
 use crate::data_models::market::{Market, Currencies};
 
@@ -77,7 +77,8 @@ pub fn start(window: Window){
                 std::thread::park();
                 set_paused(false, window.app_handle());
             }
-            std::thread::sleep(std::time::Duration::from_millis(*SLEEP_TIME.lock().unwrap()));
+            let sleep_time = *SLEEP_TIME.lock().unwrap();
+            std::thread::sleep(std::time::Duration::from_millis(sleep_time));
             iteration += 1; //TEST
         }
 

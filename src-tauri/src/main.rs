@@ -8,18 +8,14 @@ pub mod consts;
 pub mod data_models;
 pub mod commands;
 
-use std::sync::Mutex;
-
 use trader::main::{start, is_running, is_paused};
-use commands::settings::{get_sleep_time, set_sleep_time};
+use commands::settings::{get_day_delay, set_day_delay};
 
-lazy_static!{
-    pub static ref SLEEP_TIME: Mutex<u64> = Mutex::new(1000);
-}
+
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![start, is_running, is_paused, get_sleep_time, set_sleep_time])
+        .invoke_handler(tauri::generate_handler![start, is_running, is_paused, get_day_delay, set_day_delay])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
