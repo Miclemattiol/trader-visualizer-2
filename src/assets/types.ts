@@ -10,7 +10,12 @@ export type daylyEvent = [
 	kindReceived: number
 ];
 
-
+export type CurrenciesData = {
+	eur: number,
+	usd: number,
+	yen: number,
+	yuan: number
+}
 
 export const constants = {
 	events: {
@@ -31,5 +36,6 @@ export const constants = {
 		IS_PAUSED: "is_paused",
 		GET_DAY_DELAY: "get_day_delay",
 		SET_DAY_DELAY: "set_day_delay",
+		GET_CURRENCIES: "get_currencies",
 	}
 }

@@ -6,13 +6,14 @@ use tauri::{command, Window, Manager, AppHandle, EventHandler};
 
 use crate::commands::settings::SLEEP_TIME;
 use crate::consts::{ERROR_EVENT, ERROR_RUNNING, SET_STOP_EVENT, SET_PAUSE_EVENT, PAUSED_VALUE_CHANGED_EVENT, RUNNING_VALUE_CHANGED_EVENT, MARKET_UPDATE_EVENT};
-use crate::data_models::market::{Market, Currencies};
+use crate::data_models::market::{Market, Currencies, DailyData, DailyCurrencyData, Currency};
 
 
 lazy_static!{
     pub static ref RUNNING: Mutex<bool> = Mutex::new(false);
     pub static ref PAUSED: Mutex<bool> = Mutex::new(false);
     pub static ref MARKETS: Mutex<HashMap<String, Vec<Currencies>>> = Mutex::new(HashMap::new());
+    pub static ref TRADER_DATA: Mutex<Vec<DailyCurrencyData>> = Mutex::new(vec![]);
 }
 
 #[command]
@@ -35,6 +36,11 @@ fn set_paused(paused: bool, app: AppHandle) {
     app.emit_all(PAUSED_VALUE_CHANGED_EVENT, paused).unwrap();
 }
 
+#[command]
+pub fn get_currencies() -> Vec<DailyCurrencyData>{
+    TRADER_DATA.lock().unwrap().clone()
+}
+
 
 #[command]
 pub fn start(window: Window){
@@ -54,6 +60,21 @@ pub fn start(window: Window){
         MARKETS.lock().unwrap().insert("2".to_string(), vec![]);
         MARKETS.lock().unwrap().insert("3".to_string(), vec![]);
         MARKETS.lock().unwrap().insert("4".to_string(), vec![]);
+
+        //INSERT INITIAL CURRENCIES
+        let init_value = 1000000.0;
+        TRADER_DATA.lock().unwrap().push(
+            DailyCurrencyData {
+                currencies: Currencies { eur: init_value, usd: init_value, yen: init_value, yuan: init_value }, 
+                daily_data: DailyData { 
+                    event: crate::data_models::market::MarketEvent::Wait, 
+                    amount_given: 0., 
+                    amount_received: 0., 
+                    kind_given: Currency::EUR, 
+                    kind_received: Currency::EUR 
+                }
+            }
+        );
 
 
 
@@ -126,4 +147,8 @@ fn markets_update(markets: Vec<Market>, window: &Window) {
         }
     }
     window.emit(MARKET_UPDATE_EVENT, markets.clone()).unwrap();
+}
+
+fn trader_update(data: DailyData) {
+    
 }

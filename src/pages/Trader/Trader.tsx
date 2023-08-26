@@ -1,8 +1,8 @@
-import { createRef } from "react";
-import { Header } from "../components/Header/Header";
-import { SideBar } from "../components/SideBar/SideBar";
+import { createRef, useEffect, useRef, useState } from "react";
+import { Header } from "../../components/Header/Header";
+import { SideBar } from "../../components/SideBar/SideBar";
 import './Trader.scss';
-import { useTraderData } from "../Providers/TraderDataProvider";
+import { useTraderData } from "../../Providers/TraderDataProvider";
 
 import { AxisModel, Category, ChartComponent, Inject, Legend, LineSeries, SeriesCollectionDirective, SeriesDirective, Zoom, ZoomSettingsModel } from '@syncfusion/ej2-react-charts';
 
@@ -10,6 +10,8 @@ export default () => {
 
     const [traderData] = useTraderData();
     const plotDivRef = createRef<HTMLDivElement>();
+    const [Active, setActive] = useState(true);
+    const plot = useRef<ChartComponent>(null);
 
     const primaryXAxis: AxisModel = { valueType: 'Category' };
     //const data = traderData.map((value, i) => ({ x: i.toString(), y: value[0], text: "Value" }));
@@ -21,9 +23,19 @@ export default () => {
 
     const palette = ["red", "white", "green", "gold"];
 
+    useEffect(() => {
+        const animationInterval = setInterval(() => plot.current?.refresh(), 5); 
+        const animationTimeout = setTimeout(() => clearInterval(animationInterval), 500);
+    
+        return () => {
+            clearInterval(animationInterval);
+            clearTimeout(animationTimeout);
+        };
+    }, [Active]);
+
     return (
         <div className="Trader">
-            <SideBar />
+            <SideBar Active={[Active, setActive]} />
             <div className="Content">
                 <Header title="MTNT Visualizer" />
                 <main>
@@ -33,7 +45,7 @@ export default () => {
                         })
                     } */}
                     <div ref={plotDivRef} className="plotContainer">
-                        <ChartComponent id='charts' primaryXAxis={primaryXAxis} primaryYAxis={{ interval: 1000, }} zoomSettings={zoomSettings} palettes={palette} width={plotDivRef.current?.clientWidth.toString() ?? "100%"} height="100%">
+                        <ChartComponent id='charts' primaryXAxis={primaryXAxis} primaryYAxis={{ interval: 1000, }} zoomSettings={zoomSettings} palettes={palette} height="100%" ref={plot}>
                             <Inject services={[LineSeries, Category, Zoom, Legend]} />
                             <SeriesCollectionDirective>
                                 <SeriesDirective dataSource={traderData.map((value, i) => ({ x: i.toString(), y: value[0], text: "Value" }))} xName='x' yName='y' type='Line' name="EUR" />

@@ -32,6 +32,9 @@ export const TraderDataProvider = ({ children }: Props) => {
     useEffect(() => {
         if(traderState.running){
             setTraderData([]);
+            (async () => {
+                console.log(await invoke(constants.functions.GET_CURRENCIES));
+            })();
         }
     }, [traderState.running]);
 
