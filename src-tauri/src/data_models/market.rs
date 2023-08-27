@@ -1,16 +1,16 @@
 use serde::ser::{Serialize, SerializeStruct, Serializer};
 
 #[derive(Copy)]
-pub struct Currencies {
-    pub eur: f32,
-    pub usd: f32,
-    pub yen: f32,
-    pub yuan: f32,
+pub struct CurrencyData {
+    pub eur: f64,
+    pub usd: f64,
+    pub yen: f64,
+    pub yuan: f64,
 }
 
-impl Clone for Currencies {
+impl Clone for CurrencyData {
     fn clone(&self) -> Self {
-        Currencies {
+        CurrencyData {
             eur: self.eur,
             usd: self.usd,
             yen: self.yen,
@@ -19,7 +19,7 @@ impl Clone for Currencies {
     }
 }
 
-impl Serialize for Currencies {
+impl Serialize for CurrencyData {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -35,7 +35,7 @@ impl Serialize for Currencies {
 
 pub struct Market {
     pub name: String,
-    pub currencies: Currencies,
+    pub currencies: CurrencyData,
 }
 
 impl Clone for Market {
@@ -112,7 +112,7 @@ impl Clone for DailyData {
 }
 
 pub struct DailyCurrencyData {
-    pub currencies: Currencies,
+    pub currencies: CurrencyData,
     pub daily_data: DailyData,
 }
 

@@ -1,30 +1,33 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.scss";
-import { ThemeProvider } from "./Providers/ThemeProvider";
-import { TraderStateProvider } from "./Providers/TraderStateProvider";
-import Trader from "./pages/Trader/Trader";
-import Market from "./pages/Market/Market";
-import { TraderDataProvider } from "./Providers/TraderDataProvider";
+import { useTraderPausedState } from "./Providers/TraderPausedStateProvider";
+import { useTraderRunningState } from "./Providers/TraderRunningStateProvider";
+import { useTraderDailyUpdate } from "./Providers/TraderDailyUpdateProvider";
+import { useMarketsUpdate } from "./Providers/MarketsUpdateProvider";
 
 function App() {
 
-	return (
-		<ThemeProvider>
-			<TraderStateProvider>
-				<TraderDataProvider>
-					<div className="container">
-						<BrowserRouter>
-							<Routes>
-								<Route path="/trader/" Component={Trader } />
-								<Route path="/market/" Component={Market } />
+	const [running, setRunning] = useTraderRunningState();
+	const [paused, setPaused] = useTraderPausedState();
+	const dailyUpdates = useTraderDailyUpdate();
+	const marketUpdates = useMarketsUpdate();
 
-								<Route path="*" element={<Navigate to="/trader/" />} />
-							</Routes>
-						</BrowserRouter>
-					</div>
-				</TraderDataProvider>
-			</TraderStateProvider>
-		</ThemeProvider>
+	return (
+		<main>
+			<button onClick={running ? () => setRunning(false) : () => setRunning(true) }>{running ? "Stop" : "Start"}</button>
+			<button onClick={() => setPaused(!paused)}>{paused ? "Resume" : "Pause"}</button>
+
+			{dailyUpdates.map((dailyUpdate, index) => (
+				<div key={index}>
+					{dailyUpdate.currencies.eur}
+				</div>
+			))}
+			<br /><br />
+			{Object.keys(marketUpdates).map((marketUpdate, index) => (
+				<div key={index}>
+					{marketUpdate}
+				</div>
+			))}
+		</main>
 	);
 }
 
