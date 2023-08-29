@@ -21,6 +21,8 @@ export const constants = {
 		get_markets: "get_markets",
 		reset_currencies: "reset_currencies",	//NOT WORKING. DO NOT USE
 		reset_markets: "reset_markets",			//NOT WORKING. DO NOT USE
+		get_strategies: "get_strategies",
+		select_strategy: "select_strategy",
 	}
 }
 

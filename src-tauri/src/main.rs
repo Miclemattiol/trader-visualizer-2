@@ -8,13 +8,17 @@ pub mod consts;
 pub mod data_models;
 pub mod commands;
 
-use trader::main::{start, is_running, is_paused, get_currencies, get_markets, reset_currencies, reset_markets};
+use trader::main::{start, is_running, is_paused, get_currencies, get_markets, reset_currencies, reset_markets, get_strategies, select_strategy};
 use commands::settings::{get_day_delay, set_day_delay};
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![start, is_running, is_paused, get_day_delay, set_day_delay, get_currencies, get_markets, reset_currencies, reset_markets])
-        .enable_macos_default_menu(false)
+        .invoke_handler(tauri::generate_handler![
+            start, is_running, is_paused, 
+            get_day_delay, set_day_delay, 
+            get_currencies, get_markets, reset_currencies, reset_markets, 
+            get_strategies, select_strategy
+        ]).enable_macos_default_menu(false)
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

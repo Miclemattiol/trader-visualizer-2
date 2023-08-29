@@ -1,0 +1,40 @@
+header.Header {
+    min-height: var(--header-height);
+    max-height: var(--header-height);
+    width: 100%;
+
+    padding: 0 var(--default-paddings);
+    border-bottom: 1px solid var(--background-alt);
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    > div.buttons {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: var(--default-paddings);
+    }
+
+    >div.links {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--default-paddings);
+
+        > a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: color 0.2s ease-in-out;
+
+            &:hover {
+                color: var(--text-alt);
+            }
+        }
+    }
+}

@@ -1,32 +1,38 @@
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.scss";
-import { useTraderPausedState } from "./Providers/TraderPausedStateProvider";
-import { useTraderRunningState } from "./Providers/TraderRunningStateProvider";
-import { useTraderDailyUpdate } from "./Providers/TraderDailyUpdateProvider";
-import { useMarketsUpdate } from "./Providers/MarketsUpdateProvider";
+import { MarketsUpdateProvider } from "./Providers/MarketsUpdateProvider";
+import { TraderDailyUpdateProvider } from "./Providers/TraderDailyUpdateProvider";
+import { Header } from "./components/Header/Header";
+import { MarketsPage } from "./pages/MarketsPage/MarketsPage";
+import { TraderPage } from "./pages/TraderPage/TraderPage";
 
 function App() {
 
-	const [running, setRunning] = useTraderRunningState();
-	const [paused, setPaused] = useTraderPausedState();
-	const dailyUpdates = useTraderDailyUpdate();
-	const marketUpdates = useMarketsUpdate();
-
 	return (
-		<main>
-			<button onClick={running ? () => setRunning(false) : () => setRunning(true) }>{running ? "Stop" : "Start"}</button>
-			<button onClick={() => setPaused(!paused)}>{paused ? "Resume" : "Pause"}</button>
+		<main className="App">
+			<BrowserRouter>
+				<Routes>
+					<Route path="/trader/" element={
+						<>
+							<Header />
+							<TraderDailyUpdateProvider>
+								<TraderPage />
+							</TraderDailyUpdateProvider>
+						</>}
+					/>
+					<Route path="/market/" element={
+						<>
+							<Header />
+							<MarketsUpdateProvider>
+								<MarketsPage />
+							</MarketsUpdateProvider>
+						</>
+					}
+					/>
 
-			{dailyUpdates.map((dailyUpdate, index) => (
-				<div key={index}>
-					{dailyUpdate.currencies.eur}
-				</div>
-			))}
-			<br /><br />
-			{Object.keys(marketUpdates).map((marketUpdate, index) => (
-				<div key={index}>
-					{marketUpdate}
-				</div>
-			))}
+					<Route path="*" element={<Navigate to="/trader/" />} />
+				</Routes>
+			</BrowserRouter>
 		</main>
 	);
 }

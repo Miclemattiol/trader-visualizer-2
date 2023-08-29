@@ -17,7 +17,7 @@ export const TraderRunningStateProvider = ({ children }: Props) => {
 
     const setTraderRunningState = async (newTraderRunningState: boolean) => {
         if (newTraderRunningState == TraderRunningState) return;
-        if (newTraderRunningState) await invoke(constants.functions.start, { newTraderRunningState });
+        if (newTraderRunningState) await invoke(constants.functions.start);
         else emit(constants.events.SET_STOP_EVENT, {});
     }
 

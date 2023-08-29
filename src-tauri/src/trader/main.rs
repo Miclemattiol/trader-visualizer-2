@@ -8,12 +8,14 @@ use crate::commands::settings::SLEEP_TIME;
 use crate::consts::{ERROR_EVENT, ERROR_RUNNING, SET_STOP_EVENT, SET_PAUSE_EVENT, PAUSED_VALUE_CHANGED_EVENT, RUNNING_VALUE_CHANGED_EVENT, MARKET_UPDATE_EVENT, DAILY_UPDATE_EVENT, DAILY_RESET_EVENT, ERROR_RESET};
 use crate::data_models::market::{Market, CurrencyData, DailyData, DailyCurrencyData, Currency, MarketEvent};
 
+const STRATEGIES: &'static [&'static str] = &["Default", "Prova1", "Prova2", "Prova3", "Prova4", "Prova5", "Prova6"];   // TODO: INSERT STRATEGIES HERE
 
 lazy_static!{
     pub static ref RUNNING: Mutex<bool> = Mutex::new(false);
     pub static ref PAUSED: Mutex<bool> = Mutex::new(false);
     pub static ref MARKETS: Mutex<HashMap<String, Vec<CurrencyData>>> = Mutex::new(HashMap::new());
     pub static ref TRADER_DATA: Mutex<Vec<DailyCurrencyData>> = Mutex::new(vec![]);
+    pub static ref SELECTED_STRATEGY: Mutex<String> = Mutex::new(STRATEGIES[0].to_string());
 }
 
 #[command]
@@ -46,7 +48,7 @@ pub fn get_markets() -> HashMap<String, Vec<CurrencyData>>{
     MARKETS.lock().unwrap().clone()
 }
 
-#[command]
+#[command]  //NOT WORKING YET
 pub fn reset_currencies(window: Window){
     if is_running() {
         window.emit(ERROR_EVENT, ERROR_RESET).unwrap();
@@ -57,7 +59,7 @@ pub fn reset_currencies(window: Window){
     window.emit_all(DAILY_RESET_EVENT, "").unwrap();
 }
 
-#[command]
+#[command]  //NOT WORKING YET
 pub fn reset_markets(window: Window){
     if is_running() {
         window.emit(ERROR_EVENT, ERROR_RESET).unwrap();
@@ -66,6 +68,16 @@ pub fn reset_markets(window: Window){
 
     MARKETS.lock().unwrap().clear();
     window.emit_all(MARKET_UPDATE_EVENT, "").unwrap();
+}
+
+#[command]
+pub fn get_strategies() -> Vec<String>{
+    STRATEGIES.iter().map(|s| s.to_string()).collect()
+}
+
+#[command]
+pub fn select_strategy(strategy: usize){
+    *SELECTED_STRATEGY.lock().unwrap() = STRATEGIES[strategy].to_string();
 }
 
 #[command]
@@ -87,10 +99,10 @@ pub fn start(window: Window){
 
         //SETUP TRADER
         let init_value = 1000000.0;
-        MARKETS.lock().unwrap().insert("1".to_string(), vec![CurrencyData {eur: init_value, usd: init_value, yen: init_value, yuan: init_value }]);    //TEST
-        MARKETS.lock().unwrap().insert("2".to_string(), vec![CurrencyData {eur: init_value, usd: init_value, yen: init_value, yuan: init_value }]);    //TEST
-        MARKETS.lock().unwrap().insert("3".to_string(), vec![CurrencyData {eur: init_value, usd: init_value, yen: init_value, yuan: init_value }]);    //TEST
-        MARKETS.lock().unwrap().insert("ananas".to_string(), vec![CurrencyData {eur: init_value, usd: init_value, yen: init_value, yuan: init_value }]);    //TEST
+        MARKETS.lock().unwrap().insert("Market di Manu".to_string(), vec![CurrencyData {eur: init_value, usd: init_value, yen: init_value, yuan: init_value }]);    //TEST
+        MARKETS.lock().unwrap().insert("Market di Manu ma di quell'altro Manu".to_string(), vec![CurrencyData {eur: init_value, usd: init_value, yen: init_value, yuan: init_value }]);    //TEST
+        MARKETS.lock().unwrap().insert("Market di Yapoco".to_string(), vec![CurrencyData {eur: init_value, usd: init_value, yen: init_value, yuan: init_value }]);    //TEST
+        MARKETS.lock().unwrap().insert("Market di Micle il migliore".to_string(), vec![CurrencyData {eur: init_value, usd: init_value, yen: init_value, yuan: init_value }]);    //TEST
 
         //INSERT INITIAL CURRENCIES
         let init_value = 1000000.0;
@@ -107,27 +119,75 @@ pub fn start(window: Window){
             }
         );
 
-
+        println!("Trader started with strategy {}", SELECTED_STRATEGY.lock().unwrap());
 
         set_running(true, window.app_handle());
-        let mut iteration: u32 = 0;//TEST
         while !*stop.lock().unwrap() {
             //TRADER MAIN LOOP
 
-            let markets = vec![//TEST
-                Market { name: "1".to_string(), currencies: CurrencyData { eur: iteration as f64, usd: iteration as f64, yen: iteration as f64, yuan: iteration as f64} },
-                Market { name: "2".to_string(), currencies: CurrencyData { eur: iteration as f64, usd: iteration as f64, yen: iteration as f64, yuan: iteration as f64} },
-                Market { name: "3".to_string(), currencies: CurrencyData { eur: iteration as f64, usd: iteration as f64, yen: iteration as f64, yuan: iteration as f64} },
-                Market { name: "ananas".to_string(), currencies: CurrencyData { eur: iteration as f64, usd: iteration as f64, yen: iteration as f64, yuan: iteration as f64} }
-            ];
+            // let markets = vec![//TEST
+            //     Market { name: "1".to_string(), currencies: CurrencyData { eur: iteration as f64, usd: iteration as f64, yen: iteration as f64, yuan: iteration as f64} },
+            //     Market { name: "2".to_string(), currencies: CurrencyData { eur: iteration as f64, usd: iteration as f64, yen: iteration as f64, yuan: iteration as f64} },
+            //     Market { name: "3".to_string(), currencies: CurrencyData { eur: iteration as f64, usd: iteration as f64, yen: iteration as f64, yuan: iteration as f64} },
+            //     Market { name: "ananas".to_string(), currencies: CurrencyData { eur: iteration as f64, usd: iteration as f64, yen: iteration as f64, yuan: iteration as f64} }
+            // ];
+
+            //update markets by increasing the value of each currency by a random number in range from -2000 to 3000
+            let mut markets = vec![];
+            for (name, currencies) in MARKETS.lock().unwrap().iter() {
+                let mut currencies = currencies.last().unwrap().clone();
+                currencies.eur += (rand::random::<f64>() * 5000.0) - 2000.0;
+                currencies.usd += (rand::random::<f64>() * 5000.0) - 2000.0;
+                currencies.yen += (rand::random::<f64>() * 5000.0) - 2000.0;
+                currencies.yuan += (rand::random::<f64>() * 5000.0) - 2000.0;
+                markets.push(Market { name: name.clone(), currencies });
+            }
 
             markets_update(markets, &window);//TEST
 
-            let daily_data = DailyData { event: MarketEvent::Wait, amount_given: 0., amount_received: 0., kind_given: Currency::EUR, kind_received: Currency::EUR };
+            //random from 1 to 3
+            /*
+                0: wait
+                1: buy with eur to random currency. Give a random amount >0 and receive the opposite amount + a random percentage from -5 to 10
+                2: sell with eur to random currency. Give a random amount >0 and receive the opposite amount + a random percentage from -5 to 10
+            */
+            let action = rand::random::<u8>() % 3;
+            let daily_data = match action {
+                0 => DailyData { event: MarketEvent::Wait, amount_given: 0., amount_received: 0., kind_given: Currency::EUR, kind_received: Currency::EUR },
+                1 => {
+                    let kind_given = Currency::EUR;
+                    let amount_given = rand::random::<f64>() * 1000.0;
+                    let kind_received = match rand::random::<u8>() % 4 {
+                        0 => Currency::EUR,
+                        1 => Currency::USD,
+                        2 => Currency::YEN,
+                        3 => Currency::YUAN,
+                        _ => Currency::EUR
+                    };
+                    let amount_received = amount_given * (1.0 + ((rand::random::<f64>() * 15.0) - 5.0) / 100.0);
+                    DailyData { event: MarketEvent::Buy, amount_given, amount_received, kind_given, kind_received }
+                },
+                2 => {
+                    let kind_given = match rand::random::<u8>() % 4 {
+                        0 => Currency::EUR,
+                        1 => Currency::USD,
+                        2 => Currency::YEN,
+                        3 => Currency::YUAN,
+                        _ => Currency::EUR
+                    };
+                    let amount_given = rand::random::<f64>() * 1000.0;
+                    let kind_received = Currency::EUR;
+                    let amount_received = amount_given * (1.0 + ((rand::random::<f64>() * 15.0) - 5.0) / 100.0);
+                    DailyData { event: MarketEvent::Sell, amount_given, amount_received, kind_given, kind_received }
+                },
+                _ => DailyData { event: MarketEvent::Wait, amount_given: 0., amount_received: 0., kind_given: Currency::EUR, kind_received: Currency::EUR }
+            };
+
+            //let daily_data = DailyData { event: MarketEvent::Wait, amount_given: 0., amount_received: 0., kind_given: Currency::EUR, kind_received: Currency::EUR };
 
             daily_update(daily_data, &window);
 
-            println!("Markets update {}", MARKETS.lock().unwrap().get("1").unwrap().len());
+            //println!("Markets update {}", MARKETS.lock().unwrap().get("1").unwrap().len());
             println!("Trader update {}", TRADER_DATA.lock().unwrap().len());
             
             if *pause.lock().unwrap() {
@@ -137,7 +197,6 @@ pub fn start(window: Window){
             }
             let sleep_time = *SLEEP_TIME.lock().unwrap();
             std::thread::sleep(std::time::Duration::from_millis(sleep_time));
-            iteration += 1; //TEST
         }
 
 

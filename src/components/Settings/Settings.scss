@@ -1,0 +1,53 @@
+div.Settings {
+    $size: 30px;
+    width: $size;
+    height: $size;
+    
+    .SettingsIcon {
+        width: $size;
+        height: $size;
+        cursor: pointer;
+
+        
+        &:hover {
+            transition: transform 0.5s;
+            transform: rotate(-180deg);
+        }
+    }
+
+    .SettingsMenu{
+        // overflow-x: hidden;
+        z-index: 1000;
+        max-height: 80vh;
+        overflow-y: auto;
+
+        &:not(.Active){
+            display: none;
+        }
+    
+        &.Active {  
+            width: 300px;
+            position: absolute;
+            background-color: var(--background-alt);
+            border-radius: 5px;
+            right: 10px;
+            transform: translateY(10px);
+            color: var(--text-alt);
+            display: flex;
+            flex-direction: column;
+            
+            
+            > div.Content{
+                padding: 10px;
+                display: flex;
+                flex-direction: column;
+                transition: transform 0.5s;
+                
+                > h1 {
+                    text-align: center;
+                }
+
+            }
+        }
+    }
+}

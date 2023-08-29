@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api";
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { constants } from "../assets/types";
 
 type Props = {
@@ -14,7 +14,7 @@ export const DayDelayProvider = ({ children }: Props) => {
     const [dayDelay, _setDayDelay] = useState<number>(initialDayDelay);
 
     const setDayDelay = async (newDayDelay: number) => {
-        await invoke(constants.functions.set_day_delay, { newDayDelay });
+        await invoke(constants.functions.set_day_delay, { time: newDayDelay });
         _setDayDelay(newDayDelay);
     }
 
@@ -24,3 +24,5 @@ export const DayDelayProvider = ({ children }: Props) => {
         </dayDelayContext.Provider>
     );
 }
+
+export const useDayDelay = () => useContext(dayDelayContext);
