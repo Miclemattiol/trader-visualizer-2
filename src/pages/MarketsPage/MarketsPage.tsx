@@ -1,4 +1,4 @@
-import { AxisModel, Category, ChartComponent, Inject, Legend, LineSeries, SeriesCollectionDirective, SeriesDirective, Zoom, ZoomSettingsModel } from '@syncfusion/ej2-react-charts';
+import { AxisModel, Category, ChartComponent, Inject, Legend, LineSeries, MarkerSettingsModel, SeriesCollectionDirective, SeriesDirective, Tooltip, TooltipSettingsModel, Zoom, ZoomSettingsModel } from '@syncfusion/ej2-react-charts';
 import './MarketsPage.scss';
 import { useMarketsUpdate } from '../../Providers/MarketsUpdateProvider';
 
@@ -16,6 +16,24 @@ export const MarketsPage = ({ }: Props) => {
         enableSelectionZooming: true,
     }
 
+    const tooltip: TooltipSettingsModel = {
+        enable: true,
+        template: (args: { x: number, y: string, tooltip: string }) => (
+            <div className="tooltip">
+                <header>
+                    <h1>
+                        Day {args.x}
+                    </h1>
+                </header>
+                <main>
+                    <div><span>{args.tooltip}: </span><span>{parseFloat(args.y).toFixed(2)}</span></div>
+                </main>
+            </div>
+        ),
+    }
+
+    const marker: MarkerSettingsModel = { visible: true, width: 5, height: 5, shape: 'Circle' };
+
     const palette = ["red", "pink", "green", "gold"];
 
     return (
@@ -27,20 +45,20 @@ export const MarketsPage = ({ }: Props) => {
                 const yuanData = marketsData[key].map((value, i) => ({ x: i.toString(), y: value.yuan, text: "YUAN" }));
                 return (
                     <div className='chartContainer' key={key}>
-                    <ChartComponent className='chart'
-                        primaryXAxis={primaryXAxis} 
-                        zoomSettings={zoomSettings} palettes={palette}
-                        title={key} titleStyle={{color: "var(--text)"}}
-                        
+                        <ChartComponent className='chart'
+                            primaryXAxis={primaryXAxis}
+                            zoomSettings={zoomSettings} palettes={palette}
+                            title={key} titleStyle={{ color: "var(--text)" }}
+                            tooltip={tooltip}
                         >
-                        <Inject services={[LineSeries, Category, Zoom, Legend]} />
-                        <SeriesCollectionDirective>
-                            <SeriesDirective dataSource={eurData} xName='x' yName='y' type='Line' name="EUR" />
-                            <SeriesDirective dataSource={usdData} xName='x' yName='y' type='Line' name="USD" />
-                            <SeriesDirective dataSource={yenData} xName='x' yName='y' type='Line' name="YEN" />
-                            <SeriesDirective dataSource={yuanData} xName='x' yName='y' type='Line' name="YUAN" />
-                        </SeriesCollectionDirective>
-                    </ChartComponent>
+                            <Inject services={[LineSeries, Category, Zoom, Legend, Tooltip]} />
+                            <SeriesCollectionDirective>
+                                <SeriesDirective dataSource={eurData} xName='x' yName='y' type='Line' name="EUR" marker={marker} tooltipMappingName='text' />
+                                <SeriesDirective dataSource={usdData} xName='x' yName='y' type='Line' name="USD" marker={marker} tooltipMappingName='text' />
+                                <SeriesDirective dataSource={yenData} xName='x' yName='y' type='Line' name="YEN" marker={marker} tooltipMappingName='text' />
+                                <SeriesDirective dataSource={yuanData} xName='x' yName='y' type='Line' name="YUAN" marker={marker} tooltipMappingName='text' />
+                            </SeriesCollectionDirective>
+                        </ChartComponent>
                     </div>
                     // <div key={key} className='chart'/>
                 )

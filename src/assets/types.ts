@@ -63,5 +63,5 @@ export interface DailyData {
 
 export interface DailyCurrencyData {
 	currencies: CurrencyData,
-	daily_data: any
+	daily_data: DailyData
 }
