@@ -39,13 +39,8 @@ export const MarketsUpdateProvider = ({ children }: Props) => {
             });
 		});
 
-        const unlistenReset = listen(constants.events.MARKET_RESET_EVENT, () => {
-            setMarketsUpdates({});
-        });
-
 		return () => {
 			unlistenUpdate.then(unlisten => unlisten()).catch(err => console.error(err));
-            unlistenReset.then(unlisten => unlisten()).catch(err => console.error(err));
 		};
     }, []);
     

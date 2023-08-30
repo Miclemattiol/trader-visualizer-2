@@ -4,9 +4,27 @@ div.MarketsPage {
     grid-auto-rows: 50%;
     overflow-y: auto;
 
+    div.noMarkets {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        > h1 {
+            text-align: center;
+        }
+    }
+
     &:has(div:only-child){
         grid-auto-rows: 100%;
+
+        &:not(:nth-of-type(2n)):last-of-type {
+            grid-column: 1 / -1;
+        }
     }
+
+    
 
     > .chartContainer {
         height: 100%;

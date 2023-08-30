@@ -31,13 +31,8 @@ export const TraderDailyUpdateProvider = ({ children }: Props) => {
             setTraderDailyUpdates(prev => [...prev, event.payload]);
 		});
 
-        const unlistenReset = listen(constants.events.DAILY_RESET_EVENT, () => {
-            setTraderDailyUpdates([]);
-        });
-
 		return () => {
 			unlistenDaily.then(unlisten => unlisten()).catch(err => console.error(err));
-            unlistenReset.then(unlisten => unlisten()).catch(err => console.error(err));
 		};
     }, []);
     
