@@ -1,6 +1,7 @@
 import { AxisModel, Category, ChartComponent, Inject, Legend, LineSeries, MarkerSettingsModel, SeriesCollectionDirective, SeriesDirective, Tooltip, TooltipSettingsModel, Zoom, ZoomSettingsModel } from '@syncfusion/ej2-react-charts';
 import './MarketsPage.scss';
 import { useMarketsUpdate } from '../../Providers/MarketsUpdateProvider';
+import { useWatchedCurrencies } from '../../Providers/WatchedCurrenciesProvider';
 
 type Props = {
 
@@ -9,6 +10,8 @@ type Props = {
 export const MarketsPage = ({ }: Props) => {
 
     const marketsData = useMarketsUpdate();
+
+    const [watchedCurrencies] = useWatchedCurrencies();
 
     const primaryXAxis: AxisModel = { valueType: 'Category' };
 
@@ -53,10 +56,10 @@ export const MarketsPage = ({ }: Props) => {
                         >
                             <Inject services={[LineSeries, Category, Zoom, Legend, Tooltip]} />
                             <SeriesCollectionDirective>
-                                <SeriesDirective dataSource={eurData} xName='x' yName='y' type='Line' name="EUR" marker={marker} tooltipMappingName='text' />
-                                <SeriesDirective dataSource={usdData} xName='x' yName='y' type='Line' name="USD" marker={marker} tooltipMappingName='text' />
-                                <SeriesDirective dataSource={yenData} xName='x' yName='y' type='Line' name="YEN" marker={marker} tooltipMappingName='text' />
-                                <SeriesDirective dataSource={yuanData} xName='x' yName='y' type='Line' name="YUAN" marker={marker} tooltipMappingName='text' />
+                                {watchedCurrencies.EUR ? <SeriesDirective dataSource={eurData} xName='x' yName='y' type='Line' name="EUR" marker={marker} tooltipMappingName='text' /> : <></>}
+                                {watchedCurrencies.USD ? <SeriesDirective dataSource={usdData} xName='x' yName='y' type='Line' name="USD" marker={marker} tooltipMappingName='text' /> : <></>}
+                                {watchedCurrencies.YEN ? <SeriesDirective dataSource={yenData} xName='x' yName='y' type='Line' name="YEN" marker={marker} tooltipMappingName='text' /> : <></>}
+                                {watchedCurrencies.YUAN ? <SeriesDirective dataSource={yuanData} xName='x' yName='y' type='Line' name="YUAN" marker={marker} tooltipMappingName='text' /> : <></>}
                             </SeriesCollectionDirective>
                         </ChartComponent>
                     </div>

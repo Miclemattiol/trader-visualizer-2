@@ -1,10 +1,16 @@
 use tauri::AppHandle;
 
 #[tauri::command]
-async fn open_in_new_window(red: String, app: AppHandle) {
+pub async fn open_in_new_window(href: String, app: AppHandle) {
+  let window_name = format!("window-{}", rand::random::<u32>());
+  
   let docs_window = tauri::WindowBuilder::new(
     &app,
-    "external", /* the unique window label */
-    tauri::WindowUrl::External("https://tauri.app/".parse().unwrap())
-  ).build().unwrap();
+    window_name, /* the unique window label */
+    tauri::WindowUrl::External(href.parse().unwrap())
+  ).title("Visualizer").build();
+
+  if docs_window.is_err() {
+    println!("Error while opening the docs window: {:?}", docs_window);
+  }
 }

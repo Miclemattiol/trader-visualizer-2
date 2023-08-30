@@ -14,7 +14,7 @@ export const Checkbox = ({ title, onStateChange, checked: [Checked, setChecked] 
 
 
     return (
-        <div className={classNames("Checkbox", className)} onClick={() => { setChecked(prev => !prev); onStateChange?.(Checked) }}>
+        <div className={classNames("Checkbox", className)} onClick={() => { setChecked(!Checked); onStateChange?.(Checked) }}>
             <MdCheck className={classNames("Icon", { Checked })} />
             {title}
         </div>

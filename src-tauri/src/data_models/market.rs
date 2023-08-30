@@ -59,7 +59,7 @@ impl Serialize for Market {
     }
 }
 
-#[derive(serde::Serialize, Clone, Copy)]
+#[derive(serde::Serialize, serde::Deserialize, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Currency {
     EUR,
     USD,

@@ -3,6 +3,8 @@ import { DayDelayProvider } from '../../Providers/DayDelayProvider';
 import { SettingsButton } from '../Settings/Settings';
 import { PauseButton, RunButton } from './Buttons/Buttons';
 import './Header.scss';
+import { invoke } from '@tauri-apps/api';
+import { constants } from '../../assets/types';
 
 type Props = {
 
@@ -11,7 +13,9 @@ type Props = {
 export const Header = ({ }: Props) => {
 
     const clickHandler = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        if(event.ctrlKey || event.metaKey) event.preventDefault();
+        if(!(event.ctrlKey || event.metaKey)) return;
+        event.preventDefault();
+        invoke(constants.functions.open_in_new_window, { href: event.currentTarget.href });
     }
 
     return (

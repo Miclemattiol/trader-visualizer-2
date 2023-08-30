@@ -2,6 +2,7 @@ import { AxisModel, Category, ChartComponent, Inject, Legend, LineSeries, Marker
 import './TraderPage.scss';
 import { useTraderDailyUpdate } from '../../Providers/TraderDailyUpdateProvider';
 import { MarketEvent } from '../../assets/types';
+import { useWatchedCurrencies } from '../../Providers/WatchedCurrenciesProvider';
 
 type Props = {
 
@@ -10,6 +11,8 @@ type Props = {
 export const TraderPage = ({ }: Props) => {
 
     const traderData = useTraderDailyUpdate();
+
+    const [watchedCurrencies] = useWatchedCurrencies();
 
     const primaryXAxis: AxisModel = { valueType: 'Category' };
 
@@ -72,10 +75,10 @@ export const TraderPage = ({ }: Props) => {
                 tooltip={tooltip}>
                 <Inject services={[LineSeries, Category, Zoom, Legend, Tooltip]} />
                 <SeriesCollectionDirective>
-                    <SeriesDirective dataSource={eurData} xName='x' yName='y' type='Line' name="EUR" marker={marker} tooltipMappingName='text' />
-                    <SeriesDirective dataSource={usdData} xName='x' yName='y' type='Line' name="USD" marker={marker} tooltipMappingName='text' />
-                    <SeriesDirective dataSource={yenData} xName='x' yName='y' type='Line' name="YEN" marker={marker} tooltipMappingName='text' />
-                    <SeriesDirective dataSource={yuanData} xName='x' yName='y' type='Line' name="YUAN" marker={marker} tooltipMappingName='text' />
+                    { watchedCurrencies.EUR? <SeriesDirective dataSource={eurData} xName='x' yName='y' type='Line' name="EUR" marker={marker} tooltipMappingName='text'/> : <></> }
+                    { watchedCurrencies.USD? <SeriesDirective dataSource={usdData} xName='x' yName='y' type='Line' name="USD" marker={marker} tooltipMappingName='text' /> : <></> }
+                    { watchedCurrencies.YEN? <SeriesDirective dataSource={yenData} xName='x' yName='y' type='Line' name="YEN" marker={marker} tooltipMappingName='text' /> : <></> }
+                    { watchedCurrencies.YUAN? <SeriesDirective dataSource={yuanData} xName='x' yName='y' type='Line' name="YUAN" marker={marker} tooltipMappingName='text' /> : <></> }
                 </SeriesCollectionDirective>
             </ChartComponent>
         </div>

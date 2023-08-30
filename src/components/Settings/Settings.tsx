@@ -9,6 +9,8 @@ import { useOutsideAlerter } from "../../hooks/useOutsideAlterer";
 import { InputTile } from "./InputTiles/InputTile/InputTile";
 import { getStrategies, useStrategy } from "../../Providers/StrategyProvider";
 import { useDayDelay } from "../../Providers/DayDelayProvider";
+import { useWatchedCurrencies } from "../../Providers/WatchedCurrenciesProvider";
+import { Currency } from "../../assets/types";
 
 declare global {
     interface String {
@@ -31,6 +33,8 @@ export const SettingsButton = () => {
 
     useOutsideAlerter(settingsMenu, () => setActive(false));
 
+    const [watchedCurrencies, setWatchedCurrency] = useWatchedCurrencies();
+
     return (
     <div className="Settings" ref={settingsMenu} >
         <MdSettings className="SettingsIcon" onClick={() => setActive(prev => !prev)}/> 
@@ -43,7 +47,12 @@ export const SettingsButton = () => {
                             console.log(state);
                             setDayDelay(parseInt(state));
                         }}/>,
+                        <Checkbox key="EUR" className="Check" title="EUR" checked={[watchedCurrencies.EUR, (state) => { setWatchedCurrency(Currency.EUR, state.valueOf() as boolean)} ]} />,
+                        <Checkbox key="USD" className="Check" title="USD" checked={[watchedCurrencies.USD, (state) => { setWatchedCurrency(Currency.USD, state.valueOf() as boolean)} ]} />,
+                        <Checkbox key="YEN" className="Check" title="YEN" checked={[watchedCurrencies.YEN, (state) => { setWatchedCurrency(Currency.YEN, state.valueOf() as boolean)} ]} />,
+                        <Checkbox key="YUAN" className="Check" title="YUAN" checked={[watchedCurrencies.YUAN, (state) => { setWatchedCurrency(Currency.YUAN, state.valueOf() as boolean)} ]} />
                     ]}
+                    
                 </SubMenu>
                 <SubMenu title="Strategy" containerRef={settingsMenu}>
                     {

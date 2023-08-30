@@ -23,6 +23,9 @@ export const constants = {
 		reset_markets: "reset_markets",			//NOT WORKING. DO NOT USE
 		get_strategies: "get_strategies",
 		select_strategy: "select_strategy",
+		open_in_new_window: "open_in_new_window",
+		get_watched_currencies: "get_watched_currencies", 
+		set_watched_currency: "set_watched_currency",
 	}
 }
 
