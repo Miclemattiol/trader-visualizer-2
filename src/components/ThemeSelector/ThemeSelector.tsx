@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 export const ThemeSelector = () => {
 
-    const [theme, setTheme] = useTheme();
+    const [theme] = useTheme();
     const [Active, setActive] = useState(false);
 
     return (

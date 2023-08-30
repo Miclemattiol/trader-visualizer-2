@@ -1,20 +1,18 @@
 import { createContext, useContext, useState } from "react";
-import { Currency, constants } from "../assets/types";
-import { invoke } from "@tauri-apps/api";
+import { Currency } from "../assets/types";
 
 type Props = {
     children: React.ReactNode;
 };
 
-const watchedCurrencies: Map<Currency, boolean> = new Map<Currency, boolean>();
-watchedCurrencies.set(Currency.EUR, true);
-watchedCurrencies.set(Currency.USD, true);
-watchedCurrencies.set(Currency.YEN, true);
-watchedCurrencies.set(Currency.YUAN, true);
-
 type WatchedCurrenciesMap = { [key in Currency]: boolean }
 
-const initialWatchedCurrencies = await invoke<WatchedCurrenciesMap>(constants.functions.get_watched_currencies);
+const initialWatchedCurrencies = {
+    [Currency.EUR]: true,
+    [Currency.USD]: true,
+    [Currency.YEN]: true,
+    [Currency.YUAN]: true,
+}
 
 const watchedCurrencyContext = createContext<[WatchedCurrenciesMap, (currency: Currency, active: boolean) => void]>([initialWatchedCurrencies, () => console.error("WatchedCurrencyProvider not initialized")]);
 

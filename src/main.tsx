@@ -27,3 +27,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 		</StrategyProvider>
 	</React.StrictMode>
 );
+
+document.addEventListener('contextmenu', event => event.preventDefault());
