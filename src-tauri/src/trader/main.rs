@@ -80,6 +80,18 @@ pub fn select_strategy(strategy: usize){
     *SELECTED_STRATEGY.lock().unwrap() = STRATEGIES[strategy].to_string();
 }
 
+pub fn init_market(markets: Vec<Market>){
+    MARKETS.lock().unwrap().clear();
+    for market in markets {
+        MARKETS.lock().unwrap().insert(market.name, vec![market.currencies]);
+    }
+}
+
+pub fn init_trader_data(data: DailyCurrencyData){
+    TRADER_DATA.lock().unwrap().clear();
+    TRADER_DATA.lock().unwrap().push(data);
+}
+
 #[command]
 pub fn start(window: Window){
     if is_running() {

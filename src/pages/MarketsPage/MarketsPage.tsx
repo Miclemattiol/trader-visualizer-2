@@ -63,7 +63,7 @@ export const MarketsPage = ({ }: Props) => {
             </div>
             // <div key={key} className='chart'/>
         )
-    })
+    }).slice(0, 2);
 
     return (
         <div className="MarketsPage">
