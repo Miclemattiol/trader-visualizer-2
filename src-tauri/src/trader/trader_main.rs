@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::sync::{Mutex, Arc};
 use std::vec;
 
-use tauri::{command, Window, Manager, AppHandle, EventHandler};
+use tauri::{command, Manager, AppHandle, EventHandler};
 
 use crate::commands::settings::SLEEP_TIME;
 use crate::consts::{ERROR_EVENT, ERROR_RUNNING, SET_STOP_EVENT, SET_PAUSE_EVENT, PAUSED_VALUE_CHANGED_EVENT, RUNNING_VALUE_CHANGED_EVENT, MARKET_UPDATE_EVENT, DAILY_UPDATE_EVENT, DAILY_RESET_EVENT, ERROR_RESET};
@@ -49,25 +49,25 @@ pub fn get_markets() -> HashMap<String, Vec<CurrencyData>>{
 }
 
 #[command]  //NOT WORKING YET
-pub fn reset_currencies(window: Window){
+pub fn reset_currencies(app_handle: AppHandle){
     if is_running() {
-        window.emit(ERROR_EVENT, ERROR_RESET).unwrap();
+        app_handle.emit_all(ERROR_EVENT, ERROR_RESET).unwrap();
         return;
     }
 
     TRADER_DATA.lock().unwrap().clear();
-    window.emit_all(DAILY_RESET_EVENT, "").unwrap();
+    app_handle.emit_all(DAILY_RESET_EVENT, "").unwrap();
 }
 
 #[command]  //NOT WORKING YET
-pub fn reset_markets(window: Window){
+pub fn reset_markets(app_handle: AppHandle){
     if is_running() {
-        window.emit(ERROR_EVENT, ERROR_RESET).unwrap();
+        app_handle.emit_all(ERROR_EVENT, ERROR_RESET).unwrap();
         return;
     }
 
     MARKETS.lock().unwrap().clear();
-    window.emit_all(MARKET_UPDATE_EVENT, "").unwrap();
+    app_handle.emit_all(MARKET_UPDATE_EVENT, "").unwrap();
 }
 
 #[command]
@@ -93,17 +93,17 @@ pub fn init_trader_data(data: DailyCurrencyData){
 }
 
 #[command]
-pub fn start(window: Window){
+pub fn start(app_handle: AppHandle){
     if is_running() {
-        window.emit(ERROR_EVENT, ERROR_RUNNING).unwrap();
+        app_handle.emit_all(ERROR_EVENT, ERROR_RUNNING).unwrap();
         return;
     }
 
     std::thread::spawn(move ||{
         let stop = Arc::new(Mutex::new(false));
         let pause = Arc::new(Mutex::new(false));
-        let stop_handler = new_stop_listener(std::thread::current(), stop.clone(), window.clone());
-        let pause_handler = new_pause_listener(std::thread::current(), pause.clone(), window.clone());
+        let stop_handler = new_stop_listener(std::thread::current(), stop.clone(), app_handle.app_handle());
+        let pause_handler = new_pause_listener(std::thread::current(), pause.clone(), app_handle.app_handle());
 
         //RESET DATA
         MARKETS.lock().unwrap().clear();
@@ -133,7 +133,7 @@ pub fn start(window: Window){
 
         println!("Trader started with strategy {}", SELECTED_STRATEGY.lock().unwrap());
 
-        set_running(true, window.app_handle());
+        set_running(true, app_handle.app_handle());
         while !*stop.lock().unwrap() {
             //TRADER MAIN LOOP
 
@@ -155,7 +155,7 @@ pub fn start(window: Window){
                 markets.push(Market { name: name.clone(), currencies });
             }
 
-            markets_update(markets, &window);//TEST
+            markets_update(markets, app_handle.app_handle());//TEST
 
             //random from 1 to 3
             /*
@@ -197,15 +197,15 @@ pub fn start(window: Window){
 
             //let daily_data = DailyData { event: MarketEvent::Wait, amount_given: 0., amount_received: 0., kind_given: Currency::EUR, kind_received: Currency::EUR };
 
-            daily_update(daily_data, &window);
+            daily_update(daily_data, app_handle.app_handle());
 
             //println!("Markets update {}", MARKETS.lock().unwrap().get("1").unwrap().len());
             println!("Trader update {}", TRADER_DATA.lock().unwrap().len());
             
             if *pause.lock().unwrap() {
-                set_paused(true, window.app_handle());
+                set_paused(true, app_handle.app_handle());
                 std::thread::park();
-                set_paused(false, window.app_handle());
+                set_paused(false, app_handle.app_handle());
             }
             let sleep_time = *SLEEP_TIME.lock().unwrap();
             std::thread::sleep(std::time::Duration::from_millis(sleep_time));
@@ -213,15 +213,15 @@ pub fn start(window: Window){
 
 
 
-        set_running(false, window.app_handle());
-        let app = window.app_handle();
+        set_running(false, app_handle.app_handle());
+        let app = app_handle.app_handle();
         app.unlisten(stop_handler);
         app.unlisten(pause_handler);
     });
 }
 
-fn new_stop_listener(thread: std::thread::Thread, stop: Arc<Mutex<bool>>, window: Window) -> EventHandler{
-    window.app_handle().listen_global(SET_STOP_EVENT, move |_event| {
+fn new_stop_listener(thread: std::thread::Thread, stop: Arc<Mutex<bool>>, app_handle: AppHandle) -> EventHandler{
+    app_handle.app_handle().listen_global(SET_STOP_EVENT, move |_event| {
         
         println!("Stop event received");
         *stop.lock().unwrap() = true;
@@ -229,8 +229,8 @@ fn new_stop_listener(thread: std::thread::Thread, stop: Arc<Mutex<bool>>, window
     })
 }
 
-fn new_pause_listener(thread: std::thread::Thread, pause: Arc<Mutex<bool>>, window: Window) -> EventHandler{
-    window.app_handle().listen_global(SET_PAUSE_EVENT, move |_event| {
+fn new_pause_listener(thread: std::thread::Thread, pause: Arc<Mutex<bool>>, app_handle: AppHandle) -> EventHandler{
+    app_handle.app_handle().listen_global(SET_PAUSE_EVENT, move |_event| {
         println!("Pause event received");
         if is_paused() {
             *pause.lock().unwrap() = false;
@@ -241,7 +241,7 @@ fn new_pause_listener(thread: std::thread::Thread, pause: Arc<Mutex<bool>>, wind
     })
 }
 
-fn daily_update(data: DailyData, window: &Window) {
+fn daily_update(data: DailyData, app_handle: AppHandle) {
     let mut currencies = TRADER_DATA.lock().unwrap().last().unwrap().currencies.clone();
     match data.event {
         MarketEvent::Buy | MarketEvent::Sell => {
@@ -263,10 +263,10 @@ fn daily_update(data: DailyData, window: &Window) {
     }
     let daily_data = DailyCurrencyData { currencies, daily_data: data };
     TRADER_DATA.lock().unwrap().push(daily_data.clone());
-    window.emit_all(DAILY_UPDATE_EVENT, daily_data).unwrap();
+    app_handle.emit_all(DAILY_UPDATE_EVENT, daily_data).unwrap();
 }
 
-fn markets_update(markets: Vec<Market>, window: &Window) {
+fn markets_update(markets: Vec<Market>, app_handle: AppHandle) {
     let mut market_lock = MARKETS.lock().unwrap();
     for market in markets.clone() {
         let currencies = market_lock.get_mut(&market.name);
@@ -274,5 +274,5 @@ fn markets_update(markets: Vec<Market>, window: &Window) {
             currencies.unwrap().push(market.currencies);
         }
     }
-    window.emit_all(MARKET_UPDATE_EVENT, markets).unwrap();
+    app_handle.emit_all(MARKET_UPDATE_EVENT, markets).unwrap();
 }

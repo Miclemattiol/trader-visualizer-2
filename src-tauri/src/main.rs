@@ -8,7 +8,7 @@ pub mod consts;
 pub mod data_models;
 pub mod commands;
 
-use trader::main::{start, is_running, is_paused, get_currencies, get_markets, reset_currencies, reset_markets, get_strategies, select_strategy};
+use trader::trader_main::{start, is_running, is_paused, get_currencies, get_markets, reset_currencies, reset_markets, get_strategies, select_strategy};
 use commands::settings::{get_day_delay, set_day_delay, get_watched_currencies, set_watched_currency};
 use commands::controls::open_in_new_window;
 
