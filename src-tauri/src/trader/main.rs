@@ -15,7 +15,7 @@ lazy_static!{
     pub static ref PAUSED: Mutex<bool> = Mutex::new(false);
     pub static ref MARKETS: Mutex<HashMap<String, Vec<CurrencyData>>> = Mutex::new(HashMap::new());
     pub static ref TRADER_DATA: Mutex<Vec<DailyCurrencyData>> = Mutex::new(vec![]);
-    pub static ref SELECTED_STRATEGY: Mutex<String> = Mutex::new(STRATEGIES[0].to_string());
+    pub static ref SELECTED_STRATEGY: Mutex<usize> = Mutex::new(0);
 }
 
 #[command]
@@ -77,7 +77,7 @@ pub fn get_strategies() -> Vec<String>{
 
 #[command]
 pub fn select_strategy(strategy: usize){
-    *SELECTED_STRATEGY.lock().unwrap() = STRATEGIES[strategy].to_string();
+    *SELECTED_STRATEGY.lock().unwrap() = strategy;
 }
 
 pub fn init_market(markets: Vec<Market>){
