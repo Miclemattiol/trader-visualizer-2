@@ -5,7 +5,7 @@ use std::vec;
 use tauri::{command, Manager, AppHandle, EventHandler};
 
 use crate::commands::settings::SLEEP_TIME;
-use crate::consts::{ERROR_EVENT, ERROR_RUNNING, SET_STOP_EVENT, SET_PAUSE_EVENT, PAUSED_VALUE_CHANGED_EVENT, RUNNING_VALUE_CHANGED_EVENT, MARKET_UPDATE_EVENT, DAILY_UPDATE_EVENT, DAILY_RESET_EVENT, ERROR_RESET};
+use crate::consts::{ERROR_EVENT, ERROR_RUNNING, SET_STOP_EVENT, SET_PAUSE_EVENT, PAUSED_VALUE_CHANGED_EVENT, RUNNING_VALUE_CHANGED_EVENT, MARKET_UPDATE_EVENT, DAILY_UPDATE_EVENT, DAILY_RESET_EVENT, ERROR_RESET, TRADER_RUNNING_VALUE, TRADER_NOT_RUNNING_VALUE, TRADER_PAUSED_VALUE, TRADER_NOT_PAUSED_VALUE};
 use crate::data_models::market::{Market, CurrencyData, DailyData, DailyCurrencyData, Currency, MarketEvent};
 
 const STRATEGIES: &'static [&'static str] = &["Default", "Prova1", "Prova2", "Prova3", "Prova4", "Prova5", "Prova6"];   // TODO: INSERT STRATEGIES HERE
@@ -26,6 +26,8 @@ pub fn is_running() -> bool {
 fn set_running(running: bool, app: AppHandle) {
     *RUNNING.lock().unwrap() = running;
     app.emit_all(RUNNING_VALUE_CHANGED_EVENT, running).unwrap();
+    let run: String = if running { TRADER_RUNNING_VALUE } else { TRADER_NOT_RUNNING_VALUE }.to_string();
+    app.trigger_global(RUNNING_VALUE_CHANGED_EVENT, Some(run));
 }
 
 #[command]
@@ -36,6 +38,8 @@ pub fn is_paused() -> bool {
 fn set_paused(paused: bool, app: AppHandle) {
     *PAUSED.lock().unwrap() = paused;
     app.emit_all(PAUSED_VALUE_CHANGED_EVENT, paused).unwrap();
+    let pause: String = if paused { TRADER_PAUSED_VALUE } else { TRADER_NOT_PAUSED_VALUE }.to_string();
+    app.trigger_global(PAUSED_VALUE_CHANGED_EVENT, Some(pause));
 }
 
 #[command]
