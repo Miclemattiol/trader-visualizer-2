@@ -134,6 +134,7 @@ fn handle_event(id: String, app_handle: AppHandle) {
                 app_handle.trigger_global(SET_STOP_EVENT, None);
                 std::thread::park();
                 app_handle.unlisten(stopped_listener);
+                std::thread::sleep(std::time::Duration::from_millis(100)); // Give time to the front end to clear the plot
                 start(app_handle.clone());
                 set_button_enabled(&app_handle, START_BUTTON_ID, true);
                 set_button_enabled(&app_handle, PAUSE_BUTTON_ID, true);
