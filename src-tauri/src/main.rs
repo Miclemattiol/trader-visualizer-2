@@ -104,7 +104,6 @@ fn create_menu () -> (Menu, SystemTray) {
 fn handle_event(id: String, app_handle: AppHandle) {
     match id.as_str() {
         START_BUTTON_ID => {
-            println!("Start button clicked");
             if is_running() {
                 app_handle.trigger_global(SET_STOP_EVENT, None);
             } else {
@@ -117,7 +116,6 @@ fn handle_event(id: String, app_handle: AppHandle) {
         }
 
         RESTART_BUTTON_ID => {
-            println!("Restart button clicked");
             std::thread::spawn(move || {
                 set_button_enabled(&app_handle, START_BUTTON_ID, false);
                 set_button_enabled(&app_handle, PAUSE_BUTTON_ID, false);

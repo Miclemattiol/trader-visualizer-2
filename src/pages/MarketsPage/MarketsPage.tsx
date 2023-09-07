@@ -1,4 +1,4 @@
-import { AxisModel, Category, ChartComponent, Inject, Legend, LineSeries, MarkerSettingsModel, SeriesCollectionDirective, SeriesDirective, Tooltip, TooltipSettingsModel, Zoom, ZoomSettingsModel } from '@syncfusion/ej2-react-charts';
+import { AxisModel, Category, ChartComponent, Crosshair, Inject, Legend, LineSeries, MarkerSettingsModel, SeriesCollectionDirective, SeriesDirective, Tooltip, TooltipSettingsModel, Zoom, ZoomSettingsModel } from '@syncfusion/ej2-react-charts';
 import './MarketsPage.scss';
 import { useMarketsUpdate } from '../../Providers/MarketsUpdateProvider';
 import { useWatchedCurrencies } from '../../Providers/WatchedCurrenciesProvider';
@@ -51,8 +51,9 @@ export const MarketsPage = ({ }: Props) => {
                     zoomSettings={zoomSettings} palettes={palette}
                     title={key} titleStyle={{ color: "var(--text)" }}
                     tooltip={tooltip}
+                    crosshair={{enable: true}}
                 >
-                    <Inject services={[LineSeries, Category, Zoom, Legend, Tooltip]} />
+                    <Inject services={[LineSeries, Category, Zoom, Legend, Tooltip, Crosshair]} />
                     <SeriesCollectionDirective>
                         {watchedCurrencies.EUR ? <SeriesDirective dataSource={eurData} xName='x' yName='y' type='Line' name="EUR" marker={marker} tooltipMappingName='text' /> : <></>}
                         {watchedCurrencies.USD ? <SeriesDirective dataSource={usdData} xName='x' yName='y' type='Line' name="USD" marker={marker} tooltipMappingName='text' /> : <></>}

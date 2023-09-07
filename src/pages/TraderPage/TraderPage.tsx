@@ -1,4 +1,4 @@
-import { AxisModel, Category, ChartComponent, Inject, Legend, LineSeries, MarkerSettingsModel, SeriesCollectionDirective, SeriesDirective, Tooltip, TooltipSettingsModel, Zoom, ZoomSettingsModel } from '@syncfusion/ej2-react-charts';
+import { AxisModel, Category, ChartComponent, Crosshair, Inject, Legend, LineSeries, MarkerSettingsModel, SeriesCollectionDirective, SeriesDirective, Tooltip, TooltipSettingsModel, Zoom, ZoomSettingsModel } from '@syncfusion/ej2-react-charts';
 import './TraderPage.scss';
 import { useTraderDailyUpdate } from '../../Providers/TraderDailyUpdateProvider';
 import { MarketEvent } from '../../assets/types';
@@ -72,8 +72,9 @@ export const TraderPage = ({ }: Props) => {
             <ChartComponent className='chart'
                 primaryXAxis={primaryXAxis}
                 zoomSettings={zoomSettings} palettes={palette}
+                crosshair={{enable: true}}
                 tooltip={tooltip}>
-                <Inject services={[LineSeries, Category, Zoom, Legend, Tooltip]} />
+                <Inject services={[LineSeries, Category, Zoom, Legend, Tooltip, Crosshair]} />
                 <SeriesCollectionDirective>
                     { watchedCurrencies.EUR? <SeriesDirective dataSource={eurData} xName='x' yName='y' type='Line' name="EUR" marker={marker} tooltipMappingName='text'/> : <></> }
                     { watchedCurrencies.USD? <SeriesDirective dataSource={usdData} xName='x' yName='y' type='Line' name="USD" marker={marker} tooltipMappingName='text' /> : <></> }

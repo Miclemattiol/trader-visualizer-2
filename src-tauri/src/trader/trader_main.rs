@@ -202,9 +202,6 @@ pub fn start(app_handle: AppHandle){
             //let daily_data = DailyData { event: MarketEvent::Wait, amount_given: 0., amount_received: 0., kind_given: Currency::EUR, kind_received: Currency::EUR };
 
             daily_update(daily_data, app_handle.app_handle());
-
-            //println!("Markets update {}", MARKETS.lock().unwrap().get("1").unwrap().len());
-            println!("Trader update {}", TRADER_DATA.lock().unwrap().len());
             
             if *pause.lock().unwrap() {
                 set_paused(true, app_handle.app_handle());
@@ -227,7 +224,6 @@ pub fn start(app_handle: AppHandle){
 fn new_stop_listener(thread: std::thread::Thread, stop: Arc<Mutex<bool>>, app_handle: AppHandle) -> EventHandler{
     app_handle.app_handle().listen_global(SET_STOP_EVENT, move |_event| {
         
-        println!("Stop event received");
         *stop.lock().unwrap() = true;
         thread.unpark();
     })
@@ -235,7 +231,7 @@ fn new_stop_listener(thread: std::thread::Thread, stop: Arc<Mutex<bool>>, app_ha
 
 fn new_pause_listener(thread: std::thread::Thread, pause: Arc<Mutex<bool>>, app_handle: AppHandle) -> EventHandler{
     app_handle.app_handle().listen_global(SET_PAUSE_EVENT, move |_event| {
-        println!("Pause event received");
+        
         if is_paused() {
             *pause.lock().unwrap() = false;
             thread.unpark();
