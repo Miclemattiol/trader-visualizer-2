@@ -1,4 +1,6 @@
 // Module: consts
+pub const WINDOWS_TITLE: &str = "Trader visualizer";
+pub const WINDOWS_NAME_PREFIX: &str = "visualizer-window";
 pub const TRADER_RUNNING_VALUE: &str = "trader_running";
 pub const TRADER_NOT_RUNNING_VALUE: &str = "trader_not_running";
 pub const TRADER_PAUSED_VALUE: &str = "trader_paused";
@@ -21,6 +23,9 @@ pub const DAILY_RESET_EVENT: &str = "DAILY_RESET_EVENT";
 // Error messages
 pub const ERROR_RUNNING: &str = "Trader is already running";
 pub const ERROR_RESET: &str = "Trader is running, please stop it first";
+pub const ERROR_WINDOW_NAME: &str = "Error while opening the window";
+pub const ERROR_TAURI: &str = "Error while running tauri application";
+pub const ERROR_INVALID_VALUE: &str = "Invalid value";
 
 // Menu buttons
 pub const MAIN_SUBMENU_TITLE: &str = "Main";

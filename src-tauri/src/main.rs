@@ -16,7 +16,7 @@ use consts::{
     MAIN_SUBMENU_TITLE, PAUSED_VALUE_CHANGED_EVENT, PAUSE_BUTTON_ACCELERATOR, PAUSE_BUTTON_ID,
     PAUSE_BUTTON_LABEL, RESUME_BUTTON_LABEL, RUNNING_VALUE_CHANGED_EVENT, SET_PAUSE_EVENT,
     START_BUTTON_ACCELERATOR, START_BUTTON_ID, START_BUTTON_LABEL, STOP_BUTTON_LABEL,
-    TRADER_NOT_RUNNING_VALUE, TRADER_RUNNING_VALUE, RESTART_BUTTON_ID, RESTART_BUTTON_LABEL, RESTART_BUTTON_ACCELERATOR,
+    TRADER_NOT_RUNNING_VALUE, TRADER_RUNNING_VALUE, RESTART_BUTTON_ID, RESTART_BUTTON_LABEL, RESTART_BUTTON_ACCELERATOR, ERROR_TAURI, ERROR_INVALID_VALUE,
 };
 use tauri::{
     AppHandle, CustomMenuItem, Manager, Menu, Submenu, SystemTray, SystemTrayEvent, SystemTrayMenu,
@@ -68,7 +68,7 @@ fn main() {
             )
         })
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect(ERROR_TAURI);
 }
 
 fn create_menu () -> (Menu, SystemTray) {
@@ -151,7 +151,7 @@ fn start_button_state_updater(app_handle: AppHandle) {
         let (title, enabled) = match event.payload().unwrap() {
             TRADER_RUNNING_VALUE => (STOP_BUTTON_LABEL, true),
             TRADER_NOT_RUNNING_VALUE => (START_BUTTON_LABEL, false),
-            _ => panic!("Invalid value received"),
+            _ => panic!("{}", ERROR_INVALID_VALUE),
         };
 
         app_handle_clone.tray_handle().get_item(START_BUTTON_ID).set_title(title).unwrap();
@@ -171,7 +171,7 @@ fn pause_button_state_updater(app_handle: AppHandle) {
         let title = match event.payload().unwrap() {
             TRADER_PAUSED_VALUE => RESUME_BUTTON_LABEL,
             TRADER_NOT_PAUSED_VALUE => PAUSE_BUTTON_LABEL,
-            _ => panic!("Invalid value received"),
+            _ => panic!("{}", ERROR_INVALID_VALUE),
         };
 
         app_handle_clone.tray_handle().get_item(PAUSE_BUTTON_ID).set_title(title).unwrap();
