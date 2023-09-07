@@ -1,6 +1,8 @@
 // Module: consts
 pub const WINDOWS_TITLE: &str = "Trader visualizer";
 pub const WINDOWS_NAME_PREFIX: &str = "visualizer-window";
+pub const WINDOW_MIN_WIDTH: f64 = 800.0;
+pub const WINDOW_MIN_HEIGHT: f64 = 600.0;
 pub const TRADER_RUNNING_VALUE: &str = "trader_running";
 pub const TRADER_NOT_RUNNING_VALUE: &str = "trader_not_running";
 pub const TRADER_PAUSED_VALUE: &str = "trader_paused";

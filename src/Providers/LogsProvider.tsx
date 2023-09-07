@@ -7,7 +7,7 @@ type Props = {
     children: React.ReactNode;
 };
 
-const initialLogs = await invoke<Log[]>(constants.functions.get_logs)?? [];
+const initialLogs = (await invoke<Log[]>(constants.functions.get_logs)).reverse()?? [];
 
 const logsContext = createContext<[Log[], () => number, () => void]>([initialLogs, () => initialLogs.length, () => console.error("DayDelayContext used without Provider")]);
 
@@ -16,7 +16,7 @@ export const LogsProvider = ({ children }: Props) => {
 
     useEffect(() => {
         const logsListener = listen<Log>(constants.events.LOG_EVENT, (event) => {
-            _setLogs((logs) => [...logs, event.payload]);
+            _setLogs((logs) => [event.payload, ...logs]);
         });
 
         return () => {

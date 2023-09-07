@@ -44,7 +44,6 @@ export const SettingsButton = () => {
                 <SubMenu title="Trader" containerRef={settingsMenu}>
                     {[
                         <InputTile title="Day delay" type="number" key="MaxTrades" measure="ms" defaultValue={dayDelay} onStateChange={(state) => {
-                            console.log(state);
                             setDayDelay(parseInt(state));
                         }}/>,
                         <Checkbox key="EUR" className="Check" title="EUR" checked={[watchedCurrencies.EUR, (state) => { setWatchedCurrency(Currency.EUR, state.valueOf() as boolean)} ]} />,

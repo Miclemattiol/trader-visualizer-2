@@ -2,7 +2,7 @@ use std::sync::Mutex;
 
 use tauri::{AppHandle, Manager, command};
 
-use crate::{consts::{ERROR_WINDOW_NAME, WINDOWS_TITLE, WINDOWS_NAME_PREFIX, LOG_EVENT}, data_models::market::Log};
+use crate::{consts::{ERROR_WINDOW_NAME, WINDOWS_TITLE, WINDOWS_NAME_PREFIX, LOG_EVENT, WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT}, data_models::market::Log};
 
 lazy_static! {
   pub static ref LOGS: Mutex<Vec<Log>> = Mutex::new(vec![]);
@@ -16,7 +16,10 @@ pub async fn open_in_new_window(href: String, app: AppHandle) {
     &app,
     window_name, /* the unique window label */
     tauri::WindowUrl::External(href.parse().unwrap())
-  ).title(WINDOWS_TITLE).build();
+  ).title(WINDOWS_TITLE)
+  .inner_size(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT)
+  .min_inner_size(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT)
+  .build();
 
   if docs_window.is_err() {
     log(Log::new(crate::data_models::market::LogType::Error, ERROR_WINDOW_NAME.to_string()), &app);
@@ -30,11 +33,7 @@ pub fn log(log: Log, app_handle: &AppHandle) {
 
 #[command]
 pub fn get_logs() -> Vec<Log> {
-
-  let ret = LOGS.lock().unwrap().clone();
-  println!("Logs cloned!");
-  
-  ret
+  LOGS.lock().unwrap().clone()
 }
 
 #[command]

@@ -19,13 +19,13 @@ header.Header {
         gap: var(--default-paddings);
     }
 
-    >div.links {
+    > div.links {
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: var(--default-paddings);
 
-        > a {
+        a {
             color: var(--text);
             text-decoration: none;
             font-size: 1.2rem;
@@ -35,6 +35,27 @@ header.Header {
             &:hover {
                 text-decoration: underline;
             }
+        }
+
+        > div.logsContainer {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 4px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        span.logsNumber {
+            color: white;
+            background-color: darkcyan;
+            border-radius: 50%;
+            height: 16px;
+            width: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
         }
     }
 }

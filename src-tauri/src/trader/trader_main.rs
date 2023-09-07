@@ -136,13 +136,13 @@ pub fn start(app_handle: AppHandle){
             }
         );
 
-        println!("Trader started with strategy {}", SELECTED_STRATEGY.lock().unwrap());
-
         set_running(true, app_handle.app_handle());
         while !*stop.lock().unwrap() {
             //TRADER MAIN LOOP
 
-            log(Log::new(crate::data_models::market::LogType::Error, "Trader running".to_string()), &app_handle.app_handle());
+            log(Log::new(crate::data_models::market::LogType::Info, "Info log".to_string()), &app_handle.app_handle());
+            log(Log::new(crate::data_models::market::LogType::Warning, "Warning log".to_string()), &app_handle.app_handle());
+            log(Log::new(crate::data_models::market::LogType::Error, "Error log".to_string()), &app_handle.app_handle());
             
             let mut markets = vec![];
             for (name, currencies) in MARKETS.lock().unwrap().iter() {

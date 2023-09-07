@@ -1,11 +1,16 @@
 import classNames from "classnames";
 import { useLogsContext } from "../../Providers/LogsProvider";
 import "./LogsPage.scss";
+import { useEffect } from "react";
 
 
 export const LogsPage = () => {
-    const [logs, ..._] = useLogsContext();
+    const [logs, _, readLogs] = useLogsContext();
     
+    useEffect(() => {
+        readLogs();
+    }, [logs.length]);
+
     return (
         <div className="LogsPage">
             {logs.map((log, index) =>

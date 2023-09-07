@@ -33,6 +33,11 @@ export const InputTile = ({ title, onStateChange, className, type, measure, defa
                 onBlur={(e) => {
                     onStateChange?.((e.target as HTMLInputElement).value);
                 }}
+                onKeyDown={e => {
+                    if(e.key == "Enter"){
+                        onStateChange?.((e.target as HTMLInputElement).value);
+                    }
+                }}
                 />
                 {measure}
             </div>
