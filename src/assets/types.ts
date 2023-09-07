@@ -9,7 +9,8 @@ export const constants = {
         MARKET_UPDATE_EVENT: "MARKET_UPDATE_EVENT",
 		MARKET_RESET_EVENT: "MARKET_RESET_EVENT",
         DAILY_UPDATE_EVENT: "DAILY_UPDATE_EVENT",
-		DAILY_RESET_EVENT: "DAILY_RESET_EVENT"
+		DAILY_RESET_EVENT: "DAILY_RESET_EVENT",
+		LOG_EVENT: "LOG_EVENT",
 	},
 	functions: {
 		start: "start",
@@ -26,6 +27,8 @@ export const constants = {
 		open_in_new_window: "open_in_new_window",
 		get_watched_currencies: "get_watched_currencies", 
 		set_watched_currency: "set_watched_currency",
+		get_logs: "get_logs",
+		set_read_logs: "set_read_logs",
 	}
 }
 
@@ -67,4 +70,17 @@ export interface DailyData {
 export interface DailyCurrencyData {
 	currencies: CurrencyData,
 	daily_data: DailyData
+}
+
+export enum LogType {
+    Info,
+    Warning,
+    Error,
+}
+
+export interface Log {
+	log_type: LogType,
+	message: string,
+	read: boolean,
+	date: string,
 }

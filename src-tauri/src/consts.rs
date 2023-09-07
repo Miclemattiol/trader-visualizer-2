@@ -7,8 +7,7 @@ pub const TRADER_PAUSED_VALUE: &str = "trader_paused";
 pub const TRADER_NOT_PAUSED_VALUE: &str = "trader_not_paused";
 
 // Event names
-pub const ERROR_EVENT: &str = "ERROR_EVENT";
-pub const INFO_EVENT: &str = "INFO_EVENT";
+pub const LOG_EVENT: &str = "LOG_EVENT";
 
 pub const RUNNING_VALUE_CHANGED_EVENT: &str = "RUNNING_VALUE_CHANGED_EVENT";
 pub const PAUSED_VALUE_CHANGED_EVENT: &str = "PAUSED_VALUE_CHANGED_EVENT";
@@ -26,6 +25,9 @@ pub const ERROR_RESET: &str = "Trader is running, please stop it first";
 pub const ERROR_WINDOW_NAME: &str = "Error while opening the window";
 pub const ERROR_TAURI: &str = "Error while running tauri application";
 pub const ERROR_INVALID_VALUE: &str = "Invalid value";
+
+// Warning messages
+pub const WARNING_DAY_DELAY_TOO_LOW: &str = "Day delay is too low, it should be at least 20ms to be safe";
 
 // Menu buttons
 pub const MAIN_SUBMENU_TITLE: &str = "Main";

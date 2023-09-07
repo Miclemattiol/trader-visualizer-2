@@ -27,6 +27,8 @@
 :root {
 	--header-height: 64px;
 	--default-paddings: 16px;
+	--text-error: red;
+	--text-warning: gold;
 
 	color: var(--text);
 	background-color: var(--background);

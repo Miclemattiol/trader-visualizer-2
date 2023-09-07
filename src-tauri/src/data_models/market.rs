@@ -1,3 +1,4 @@
+use chrono::DateTime;
 use serde::ser::{Serialize, SerializeStruct, Serializer};
 
 #[derive(Copy)]
@@ -134,5 +135,55 @@ impl Clone for DailyCurrencyData {
             currencies: self.currencies.clone(),
             daily_data: self.daily_data.clone(),
         }
+    }
+}
+
+#[derive(serde::Serialize, Clone, Copy)]
+pub enum LogType {
+    Info,
+    Warning,
+    Error,
+}
+
+pub struct Log {
+    pub log_type: LogType,
+    pub message: String,
+    pub read: bool,
+    pub date: DateTime<chrono::Local>,
+}
+
+impl Log {
+    pub fn new(log_type: LogType, message: String) -> Self {
+        Log {
+            log_type,
+            message,
+            read: false,
+            date: chrono::Local::now(),
+        }
+    }
+}
+
+impl Clone for Log {
+    fn clone(&self) -> Self {
+        Log {
+            log_type: self.log_type.clone(),
+            message: self.message.clone(),
+            read: self.read,
+            date: self.date,
+        }
+    }
+}
+
+impl Serialize for Log {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut state = serializer.serialize_struct("Log", 4)?;
+        state.serialize_field("log_type", &self.log_type)?;
+        state.serialize_field("message", &self.message)?;
+        state.serialize_field("read", &self.read)?;
+        state.serialize_field("date", &self.date.format("%d/%m/%Y %H:%M").to_string())?;
+        state.end()
     }
 }

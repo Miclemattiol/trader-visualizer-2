@@ -1,0 +1,23 @@
+div.LogsPage {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    flex-direction: column-reverse;
+    gap: 2px;
+
+    >div.log {
+
+
+        &.Info {
+            color: var(--text);
+        }
+
+        &.Warning {
+            color: var(--text-warning);
+        }
+
+        &.Error {
+            color: var(--text-error);
+        }
+    }
+}

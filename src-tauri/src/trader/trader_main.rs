@@ -4,9 +4,10 @@ use std::vec;
 
 use tauri::{command, Manager, AppHandle, EventHandler};
 
+use crate::commands::controls::log;
 use crate::commands::settings::SLEEP_TIME;
-use crate::consts::{ERROR_EVENT, ERROR_RUNNING, SET_STOP_EVENT, SET_PAUSE_EVENT, PAUSED_VALUE_CHANGED_EVENT, RUNNING_VALUE_CHANGED_EVENT, MARKET_UPDATE_EVENT, DAILY_UPDATE_EVENT, DAILY_RESET_EVENT, ERROR_RESET, TRADER_RUNNING_VALUE, TRADER_NOT_RUNNING_VALUE, TRADER_PAUSED_VALUE, TRADER_NOT_PAUSED_VALUE};
-use crate::data_models::market::{Market, CurrencyData, DailyData, DailyCurrencyData, Currency, MarketEvent};
+use crate::consts::{ERROR_RUNNING, SET_STOP_EVENT, SET_PAUSE_EVENT, PAUSED_VALUE_CHANGED_EVENT, RUNNING_VALUE_CHANGED_EVENT, MARKET_UPDATE_EVENT, DAILY_UPDATE_EVENT, DAILY_RESET_EVENT, ERROR_RESET, TRADER_RUNNING_VALUE, TRADER_NOT_RUNNING_VALUE, TRADER_PAUSED_VALUE, TRADER_NOT_PAUSED_VALUE};
+use crate::data_models::market::{Market, CurrencyData, DailyData, DailyCurrencyData, Currency, MarketEvent, Log};
 
 const STRATEGIES: &'static [&'static str] = &["Default", "Prova1", "Prova2", "Prova3", "Prova4", "Prova5", "Prova6"];   // TODO: INSERT STRATEGIES HERE
 
@@ -55,7 +56,7 @@ pub fn get_markets() -> HashMap<String, Vec<CurrencyData>>{
 #[command]  //NOT WORKING YET
 pub fn reset_currencies(app_handle: AppHandle){
     if is_running() {
-        app_handle.emit_all(ERROR_EVENT, ERROR_RESET).unwrap();
+        log(Log::new(crate::data_models::market::LogType::Error, ERROR_RESET.to_string()), &app_handle);
         return;
     }
 
@@ -66,7 +67,7 @@ pub fn reset_currencies(app_handle: AppHandle){
 #[command]  //NOT WORKING YET
 pub fn reset_markets(app_handle: AppHandle){
     if is_running() {
-        app_handle.emit_all(ERROR_EVENT, ERROR_RESET).unwrap();
+        log(Log::new(crate::data_models::market::LogType::Error, ERROR_RESET.to_string()), &app_handle);
         return;
     }
 
@@ -99,7 +100,7 @@ pub fn init_trader_data(data: DailyCurrencyData){
 #[command]
 pub fn start(app_handle: AppHandle){
     if is_running() {
-        app_handle.emit_all(ERROR_EVENT, ERROR_RUNNING).unwrap();
+        log(Log::new(crate::data_models::market::LogType::Error, ERROR_RUNNING.to_string()), &app_handle);
         return;
     }
 
@@ -140,6 +141,8 @@ pub fn start(app_handle: AppHandle){
         set_running(true, app_handle.app_handle());
         while !*stop.lock().unwrap() {
             //TRADER MAIN LOOP
+
+            log(Log::new(crate::data_models::market::LogType::Error, "Trader running".to_string()), &app_handle.app_handle());
             
             let mut markets = vec![];
             for (name, currencies) in MARKETS.lock().unwrap().iter() {
@@ -260,3 +263,4 @@ fn markets_update(markets: Vec<Market>, app_handle: AppHandle) {
     }
     app_handle.emit_all(MARKET_UPDATE_EVENT, markets).unwrap();
 }
+

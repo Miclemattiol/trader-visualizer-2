@@ -4,11 +4,7 @@ import { useTraderDailyUpdate } from '../../Providers/TraderDailyUpdateProvider'
 import { MarketEvent } from '../../assets/types';
 import { useWatchedCurrencies } from '../../Providers/WatchedCurrenciesProvider';
 
-type Props = {
-
-}
-
-export const TraderPage = ({ }: Props) => {
+export const TraderPage = () => {
 
     const traderData = useTraderDailyUpdate();
 

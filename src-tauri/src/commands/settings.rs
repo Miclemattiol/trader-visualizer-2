@@ -1,7 +1,9 @@
 use std::{sync::Mutex, collections::HashMap};
-use crate::data_models::market::Currency;
+use crate::{data_models::market::{Currency, LogType, Log}, consts::WARNING_DAY_DELAY_TOO_LOW};
 
-use tauri::command;
+use tauri::{command, AppHandle};
+
+use super::controls::log;
 
 lazy_static!{
     pub static ref SLEEP_TIME: Mutex<u64> = Mutex::new(1000);
@@ -14,7 +16,10 @@ lazy_static!{
 }
 
 #[command]
-pub fn set_day_delay(time: u64) {
+pub fn set_day_delay(time: u64, app_handle: AppHandle) {
+    if time < 20 {
+        log(Log::new(LogType::Warning, WARNING_DAY_DELAY_TOO_LOW.to_string()), &app_handle);
+    }
     *SLEEP_TIME.lock().unwrap() = time;
 }
 

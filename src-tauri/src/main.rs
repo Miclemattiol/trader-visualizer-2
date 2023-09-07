@@ -16,7 +16,7 @@ use consts::{
     MAIN_SUBMENU_TITLE, PAUSED_VALUE_CHANGED_EVENT, PAUSE_BUTTON_ACCELERATOR, PAUSE_BUTTON_ID,
     PAUSE_BUTTON_LABEL, RESUME_BUTTON_LABEL, RUNNING_VALUE_CHANGED_EVENT, SET_PAUSE_EVENT,
     START_BUTTON_ACCELERATOR, START_BUTTON_ID, START_BUTTON_LABEL, STOP_BUTTON_LABEL,
-    TRADER_NOT_RUNNING_VALUE, TRADER_RUNNING_VALUE, RESTART_BUTTON_ID, RESTART_BUTTON_LABEL, RESTART_BUTTON_ACCELERATOR, ERROR_TAURI, ERROR_INVALID_VALUE, ERROR_EVENT,
+    TRADER_NOT_RUNNING_VALUE, TRADER_RUNNING_VALUE, RESTART_BUTTON_ID, RESTART_BUTTON_LABEL, RESTART_BUTTON_ACCELERATOR, ERROR_TAURI, ERROR_INVALID_VALUE,
 };
 use tauri::{
     AppHandle, CustomMenuItem, Manager, Menu, Submenu, SystemTray, SystemTrayEvent, SystemTrayMenu,
@@ -26,7 +26,9 @@ use trader::trader_main::{
     reset_markets, select_strategy, start,
 };
 
+use crate::commands::controls::{log, get_logs, set_read_logs};
 use crate::consts::{SET_STOP_EVENT, TRADER_NOT_PAUSED_VALUE, TRADER_PAUSED_VALUE};
+use crate::data_models::market::Log;
 
 fn main() {
     let (menu, tray) = create_menu();
@@ -47,7 +49,9 @@ fn main() {
             select_strategy,
             open_in_new_window,
             get_watched_currencies,
-            set_watched_currency
+            set_watched_currency,
+            get_logs,
+            set_read_logs,
         ])
         .setup(|app| {
             start_button_state_updater(app.handle());
@@ -152,7 +156,7 @@ fn start_button_state_updater(app_handle: AppHandle) {
             TRADER_RUNNING_VALUE => (STOP_BUTTON_LABEL, true),
             TRADER_NOT_RUNNING_VALUE => (START_BUTTON_LABEL, false),
             _ => {
-                app_handle_clone.emit_all(ERROR_EVENT, ERROR_INVALID_VALUE).unwrap();
+                log(Log::new(data_models::market::LogType::Error, ERROR_INVALID_VALUE.to_string()), &app_handle_clone);
                 panic!("{}", ERROR_INVALID_VALUE);
             },
         };
@@ -175,7 +179,7 @@ fn pause_button_state_updater(app_handle: AppHandle) {
             TRADER_PAUSED_VALUE => RESUME_BUTTON_LABEL,
             TRADER_NOT_PAUSED_VALUE => PAUSE_BUTTON_LABEL,
             _ => {
-                app_handle_clone.emit_all(ERROR_EVENT, ERROR_INVALID_VALUE).unwrap();
+                log(Log::new(data_models::market::LogType::Error, ERROR_INVALID_VALUE.to_string()), &app_handle_clone);
                 panic!("{}", ERROR_INVALID_VALUE);
             },
         };

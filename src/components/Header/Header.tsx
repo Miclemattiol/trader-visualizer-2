@@ -25,6 +25,7 @@ export const Header = ({ }: Props) => {
             <div className="links">
                 <Link to="/trader/" onClick={clickHandler}>Trader</Link>
                 <Link to="/market/" onClick={clickHandler}>Market</Link>
+                <Link to="/logs/" onClick={clickHandler}>Logs</Link>
             </div>
 
             <div className="buttons">

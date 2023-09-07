@@ -3,11 +3,7 @@ import './MarketsPage.scss';
 import { useMarketsUpdate } from '../../Providers/MarketsUpdateProvider';
 import { useWatchedCurrencies } from '../../Providers/WatchedCurrenciesProvider';
 
-type Props = {
-
-}
-
-export const MarketsPage = ({ }: Props) => {
+export const MarketsPage = () => {
 
     const marketsData = useMarketsUpdate();
 

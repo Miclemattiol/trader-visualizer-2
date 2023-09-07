@@ -5,8 +5,11 @@ import { TraderDailyUpdateProvider } from "./Providers/TraderDailyUpdateProvider
 import { Header } from "./components/Header/Header";
 import { MarketsPage } from "./pages/MarketsPage/MarketsPage";
 import { TraderPage } from "./pages/TraderPage/TraderPage";
+import { LogsProvider } from "./Providers/LogsProvider";
+import { LogsPage } from "./pages/LogsPage/LogsPage";
 
 function App() {
+
 
 	return (
 		<main className="App">
@@ -14,7 +17,9 @@ function App() {
 				<Routes>
 					<Route path="/trader/" element={
 						<>
-							<Header />
+							<LogsProvider>
+								<Header />
+							</LogsProvider>
 							<TraderDailyUpdateProvider>
 								<TraderPage />
 							</TraderDailyUpdateProvider>
@@ -22,14 +27,24 @@ function App() {
 					/>
 					<Route path="/market/" element={
 						<>
-							<Header />
+							<LogsProvider>
+								<Header />
+							</LogsProvider>
 							<MarketsUpdateProvider>
 								<MarketsPage />
 							</MarketsUpdateProvider>
 						</>
 					}
 					/>
-
+					<Route path="/logs/" element={
+						<>
+							<LogsProvider>
+								<Header />
+								<LogsPage />
+							</LogsProvider>
+						</>
+					}
+					/>
 					<Route path="*" element={<Navigate to="/trader/" />} />
 				</Routes>
 			</BrowserRouter>
