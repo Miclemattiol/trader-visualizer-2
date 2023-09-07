@@ -140,15 +140,7 @@ pub fn start(app_handle: AppHandle){
         set_running(true, app_handle.app_handle());
         while !*stop.lock().unwrap() {
             //TRADER MAIN LOOP
-
-            // let markets = vec![//TEST
-            //     Market { name: "1".to_string(), currencies: CurrencyData { eur: iteration as f64, usd: iteration as f64, yen: iteration as f64, yuan: iteration as f64} },
-            //     Market { name: "2".to_string(), currencies: CurrencyData { eur: iteration as f64, usd: iteration as f64, yen: iteration as f64, yuan: iteration as f64} },
-            //     Market { name: "3".to_string(), currencies: CurrencyData { eur: iteration as f64, usd: iteration as f64, yen: iteration as f64, yuan: iteration as f64} },
-            //     Market { name: "ananas".to_string(), currencies: CurrencyData { eur: iteration as f64, usd: iteration as f64, yen: iteration as f64, yuan: iteration as f64} }
-            // ];
-
-            //update markets by increasing the value of each currency by a random number in range from -2000 to 3000
+            
             let mut markets = vec![];
             for (name, currencies) in MARKETS.lock().unwrap().iter() {
                 let mut currencies = currencies.last().unwrap().clone();
@@ -161,12 +153,6 @@ pub fn start(app_handle: AppHandle){
 
             markets_update(markets, app_handle.app_handle());//TEST
 
-            //random from 1 to 3
-            /*
-                0: wait
-                1: buy with eur to random currency. Give a random amount >0 and receive the opposite amount + a random percentage from -5 to 10
-                2: sell with eur to random currency. Give a random amount >0 and receive the opposite amount + a random percentage from -5 to 10
-            */
             let action = rand::random::<u8>() % 3;
             let daily_data = match action {
                 0 => DailyData { event: MarketEvent::Wait, amount_given: 0., amount_received: 0., kind_given: Currency::EUR, kind_received: Currency::EUR },
@@ -198,8 +184,6 @@ pub fn start(app_handle: AppHandle){
                 },
                 _ => DailyData { event: MarketEvent::Wait, amount_given: 0., amount_received: 0., kind_given: Currency::EUR, kind_received: Currency::EUR }
             };
-
-            //let daily_data = DailyData { event: MarketEvent::Wait, amount_given: 0., amount_received: 0., kind_given: Currency::EUR, kind_received: Currency::EUR };
 
             daily_update(daily_data, app_handle.app_handle());
             

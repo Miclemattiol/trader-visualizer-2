@@ -62,7 +62,6 @@ export const MarketsPage = ({ }: Props) => {
                     </SeriesCollectionDirective>
                 </ChartComponent>
             </div>
-            // <div key={key} className='chart'/>
         )
     })
 

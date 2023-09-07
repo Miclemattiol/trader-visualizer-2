@@ -8,7 +8,7 @@ type Props = {
     children: ReactNode;
 };
 
-type MarketsMap = { [key: string]: CurrencyData[] }; //EDIT
+type MarketsMap = { [key: string]: CurrencyData[] }; 
 
 const marketsData = await invoke<MarketsMap>(constants.functions.get_markets);
 
